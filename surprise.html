@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hadiah Untukmu 🎁</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kaushan+Script">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700;900&family=Playfair+Display:ital@1&display=swap">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; overflow:hidden; }
+
+    /* ════════════════════════════
+       PHASE 1 — GIFT BOX
+    ════════════════════════════ */
+    #phase-gift {
+      position: fixed; inset: 0;
+      font-family: "Kaushan Script", cursive;
+      background-image: radial-gradient(circle at center bottom, #e9b64b, #c76075 15%, #0d0d4b 75%, #190e14 90%);
+      transition: opacity 0.8s ease;
+    }
+    #phase-gift.fade-out { opacity: 0; pointer-events: none; }
+
+    #phase-gift canvas,
+    #phase-gift #beach {
+      position: absolute; top:0; left:0; width:100%; height:100%;
+    }
+    #phase-gift #beach {
+      background-image: url(https://dl.dropbox.com/s/oe0oce2udq44bj5/beachsil2.png);
+      background-position: bottom right;
+      background-size: 1700px;
+      background-repeat: no-repeat;
+    }
+    .moon { position:absolute; top:10%; right:12%; width:100px; height:100px; border-radius:50%; background:#ddd; box-shadow:inset 20px -10px 0 0 #b9b9b9; }
+    .moon .crater1 { position:absolute; width:30px; height:30px; border-radius:50%; background:#bbb; box-shadow:inset -3px 1.5px 0 0 #aaa; top:20px; right:20px; }
+    .moon .crater2 { position:absolute; width:10px; height:10px; border-radius:50%; background:#bbb; box-shadow:inset -1px 0.5px 0 0 #aaa; top:45px; right:50px; }
+    .moon .crater3 { position:absolute; width:15px; height:15px; border-radius:50%; background:#bbb; box-shadow:inset -1.5px 0.75px 0 0 #aaa; top:60px; right:25px; }
+    #people { position:absolute; bottom:65px; left:40px; width:140px; }
+    #sea { background-color:blue; height:85px; position:absolute; bottom:0; left:0; width:100%; background-image:radial-gradient(circle at center top, #23485a, #0d0246); }
+
+    .merrywrap { position:absolute; right:0; left:0; bottom:0; top:0; background-color:#d44; transition:background-color 0.5s ease; }
+    .giftbox { position:absolute; width:300px; height:200px; left:50%; margin-left:-150px; bottom:40px; z-index:10; cursor:pointer; }
+    .giftbox > div { background:#34495e; position:absolute; }
+    .giftbox > div:after, .giftbox > div:before { position:absolute; content:""; top:0; }
+    .giftbox:after { position:absolute; color:#fff; width:100%; content:"Klik Aku! 💕"; left:0; bottom:0; font-size:24px; text-align:center; transform:rotate(-20deg); transform-origin:0 0; }
+    .giftbox .cover { width:100%; top:0; left:0; height:25%; z-index:2; }
+    .giftbox .cover:before { position:absolute; height:100%; left:50%; width:50px; transform:translateX(-50%); background:#fdc56d; }
+    .giftbox .cover > div { position:absolute; width:50px; height:50px; left:50%; top:-50px; transform:translateX(-50%); }
+    .giftbox .cover > div:before, .giftbox .cover > div:after { position:absolute; left:0; top:0; width:100%; height:100%; content:""; box-shadow:inset 0 0 0 15px #fdc56d; border-radius:30px; transform-origin:50% 100%; }
+    .giftbox .cover > div:before { transform:translateX(-45%) skewY(40deg); }
+    .giftbox .cover > div:after  { transform:translateX(45%)  skewY(-40deg); }
+    .giftbox .box { right:5%; left:5%; height:80%; bottom:0; }
+    .giftbox .box:before { width:50px; height:100%; left:50%; transform:translateX(-50%); background:#fdc56d; }
+    .giftbox .box:after { width:100%; height:30px; background:rgba(0,0,0,0.2); }
+
+    /* Step animations — NO .icons */
+    .step-1 .giftbox { animation:wobble 0.5s linear infinite forwards; }
+    .step-1 .cover   { animation:wobble 0.5s linear infinite 0.1s forwards; }
+    .step-2 .giftbox:after { opacity:0; }
+    .step-2 .giftbox .cover { animation:flyUp  0.4s ease-in forwards; }
+    .step-2 .giftbox .box   { animation:flyDown 0.2s ease-in 0.05s forwards; }
+
+    @keyframes wobble  { 25%{transform:rotate(4deg)}  75%{transform:rotate(-2deg)} }
+    @keyframes flyUp   { 75%{opacity:1} 100%{transform:translateY(-1000px) rotate(20deg); opacity:0} }
+    @keyframes flyDown { 75%{opacity:1} 100%{transform:translateY(100%); opacity:0} }
+
+    /* ════════════════════════════
+       PHASE 2 — UCAPAN + LOVE-YOU BG
+    ════════════════════════════ */
+    #phase-ucapan {
+      position: fixed; inset: 0;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.9s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #phase-ucapan.active { opacity:1; pointer-events:all; }
+
+    /* Floating hearts background */
+    .bg_heart {
+      position: absolute; inset: 0;
+      background: #fff;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .heart {
+      position: absolute;
+      top: -50%;
+      transform: rotate(-45deg);
+    }
+    .heart::before { position:absolute; top:-50%; left:0; display:block; content:""; width:100%; height:100%; background:inherit; border-radius:100%; }
+    .heart::after  { position:absolute; top:0; right:-50%; display:block; content:""; width:100%; height:100%; background:inherit; border-radius:100%; }
+    @keyframes love { 0%{top:110%;opacity:1} 100%{top:-20%;opacity:0.3} }
+
+    /* Ucapan card */
+    .ucapan-wrap {
+      position: relative;
+      z-index: 2;
+      padding: 32px 20px 120px;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Gradient border via wrapper */
+    .ucapan-card-outer {
+      width: 100%;
+      padding: 3px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #f9a8d4, #ec4899, #a855f7, #f9a8d4);
+      background-size: 300% 300%;
+      animation: borderSpin 4s ease infinite;
+      box-shadow: 0 12px 40px rgba(219,39,119,0.2), 0 2px 8px rgba(168,85,247,0.15);
+      opacity: 0;
+      transform: scale(0.9) translateY(24px);
+      transition: opacity 0.7s 0.3s ease, transform 0.7s 0.3s cubic-bezier(0.2,0,0.2,1.4);
+    }
+    #phase-ucapan.active .ucapan-card-outer { opacity:1; transform:none; }
+    @keyframes borderSpin {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .ucapan-card {
+      background: #fff;
+      border-radius: 26px;
+      padding: 28px 24px 24px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative corner petals */
+    .ucapan-card::before {
+      content: "🌸";
+      position: absolute;
+      top: -4px; left: 6px;
+      font-size: 36px;
+      opacity: 0.55;
+      transform: rotate(-20deg);
+    }
+    .ucapan-card::after {
+      content: "🌸";
+      position: absolute;
+      top: -4px; right: 6px;
+      font-size: 36px;
+      opacity: 0.55;
+      transform: rotate(20deg) scaleX(-1);
+    }
+
+    /* Top ribbon banner */
+    .card-ribbon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(90deg, #fbcfe8, #e9d5ff, #fbcfe8);
+      background-size: 200% 100%;
+      animation: ribbonShine 3s linear infinite;
+      border-radius: 99px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-family: 'Figtree', sans-serif;
+      font-weight: 700;
+      color: #be185d;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    @keyframes ribbonShine {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    /* Stars row */
+    .card-stars {
+      font-size: 13px;
+      letter-spacing: 4px;
+      margin-bottom: 10px;
+      animation: starPulse 2s ease-in-out infinite;
+    }
+    @keyframes starPulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.6; transform:scale(0.95); }
+    }
+
+    .ucapan-title {
+      font-family: 'Figtree', sans-serif;
+      font-weight: 900;
+      font-size: clamp(20px, 5vw, 25px);
+      background: linear-gradient(135deg, #ec4899, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    /* Divider with hearts */
+    .card-divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .card-divider::before,
+    .card-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #f9a8d4, transparent);
+    }
+    .card-divider span { font-size: 14px; }
+
+    .ucapan-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(13px, 3.5vw, 14.5px);
+      color: #6B6880;
+      line-height: 1.8;
+    }
+
+    /* Doa box */
+    .ucapan-doa-wrap {
+      margin-top: 14px;
+      background: linear-gradient(135deg, #fdf2f8, #f5f3ff);
+      border-radius: 16px;
+      padding: 14px 16px;
+      border: 1px dashed #f9a8d4;
+      position: relative;
+    }
+    .ucapan-doa-wrap::before {
+      content: "🤲";
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      background: #fff;
+      padding: 0 4px;
+    }
+    .ucapan-doa {
+      font-family: 'Figtree', sans-serif;
+      font-size: clamp(11.5px, 2.8vw, 13px);
+      color: #9CA3AF;
+      line-height: 1.7;
+      margin-top: 4px;
+    }
+
+    /* Bottom emoji row */
+    .card-emoji-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+      font-size: 18px;
+      animation: emojiFloat 3s ease-in-out infinite;
+    }
+    .card-emoji-row span:nth-child(2) { animation-delay: 0.3s; }
+    .card-emoji-row span:nth-child(3) { animation-delay: 0.6s; }
+    .card-emoji-row span:nth-child(4) { animation-delay: 0.9s; }
+    .card-emoji-row span:nth-child(5) { animation-delay: 1.2s; }
+    @keyframes emojiFloat {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-4px); }
+    }
+
+    /* Corner hint ❤️ */
+    .corner-hint {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      animation: hintPulse 2s ease-in-out infinite;
+      opacity: 0;
+      transition: opacity 0.5s 1s ease;
+    }
+    #phase-ucapan.active .corner-hint { opacity:1; }
+    .hint-label {
+      font-family: 'Figtree', sans-serif;
+      font-size: 11px; font-weight: 600;
+      color: rgba(219,39,119,0.9);
+      background: rgba(255,255,255,0.92);
+      padding: 4px 10px; border-radius: 99px;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(219,39,119,0.15);
+    }
+    .hint-emoji {
+      font-size: 36px;
+      filter: drop-shadow(0 4px 12px rgba(219,39,119,0.4));
+      transition: transform 0.2s;
+    }
+    .corner-hint:hover .hint-emoji { transform: scale(1.25); }
+    .corner-hint:active .hint-emoji { transform: scale(0.9); }
+
+    @keyframes hintPulse { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    /* ── Music disc ── */
+    #music-disc {
+      position: fixed; top: 16px; right: 16px; z-index: 999;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.3);
+      border: 2px solid rgba(255,255,255,.25); user-select: none;
+    }
+    .disc-inner { font-size: 20px; animation: discSpin 3s linear infinite; display:block; }
+    #music-disc.disc-paused .disc-inner { animation-play-state: paused; }
+    @keyframes discSpin { to { transform: rotate(360deg); } }
+
+    /* Transition overlay */
+    .go-overlay {
+      position: fixed; inset:0; z-index:100;
+      background: rgba(219,39,119,0.9);
+      display: flex; align-items:center; justify-content:center;
+      opacity: 0; pointer-events:none;
+      transition: opacity 0.5s ease;
+    }
+    .go-overlay.show { opacity:1; pointer-events:all; }
+    .go-overlay span { font-size:48px; animation:spin 0.6s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+  </style>
+</head>
+<body>
+
+  <!-- ── PHASE 1: GIFT BOX ── -->
+  <div id="phase-gift">
+    <div class="moon">
+      <div class="crater1"></div><div class="crater2"></div><div class="crater3"></div>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div id="sea"></div>
+    <div id="beach"></div>
+    <img src="https://dl.dropbox.com/s/2k0mtrxc2dqurmh/jumping.png" alt="" id="people">
+
+    <div id="merrywrap" class="merrywrap">
+      <div class="giftbox">
+        <div class="cover"><div></div></div>
+        <div class="box"></div>
+      </div>
+      <!-- NO .icons — tidak ada tulisan Selamat Ulang Tahun -->
+    </div>
+  </div>
+
+  <!-- ── PHASE 2: UCAPAN + LOVE-YOU BG ── -->
+  <div id="phase-ucapan">
+    <div class="bg_heart" id="bg-heart"></div>
+
+    <div class="ucapan-wrap">
+      <div class="ucapan-card-outer">
+        <div class="ucapan-card">
+          <div class="card-ribbon">🦋 Special for you 🦋</div>
+          <div class="card-stars">✨ ⭐ ✨ ⭐ ✨</div>
+          <div class="ucapan-title">Selamat Ulang Tahun, Sayangku! 🎂</div>
+          <div class="card-divider"><span>💕</span></div>
+          <p class="ucapan-sub">
+            Akhirnya nambah umur juga ya, tua 😜.<br>
+            Hari ini langit seolah memiliki alasan untuk tersenyum, karena seseorang yang begitu berharga sedang merayakan kehidupannya. Makasih udah jadi orang yang selalu bikin hari-hari aku lebih berwarna, lebih hangat, dan lebih seru. Walaupun kadang nyebelin, kamu tuh tetep spesial. Semoga di usiamu ini dipenuhi cinta, hati yang tenang, dan kebahagiaan yang tak mengenal akhir. Terima kasih sudah hadir dalam hidupku, Selamat ulang tahun Sayang ♥️
+          </p>
+          <!-- <div class="ucapan-doa-wrap">
+            <p class="ucapan-doa">
+              Ya Allah, jaga dia yang lagi baca ini. Sehatkan badannya, lapangkan rezekinya, mudahkan semua urusannya, dan jangan pernah hilangkan senyumnya. Semoga tahun ini jadi tahun terbaiknya — penuh cinta, berkah, dan kebahagiaan yang bahkan dia sendiri gak nyangka bakal dapet. Aamiin ya Rabb 🤍
+            </p>
+          </div> -->
+          <div class="card-emoji-row">
+            <span>🎁</span><span>🎈</span><span>🎂</span><span>💖</span><span>🥳</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corner hint -->
+    <div class="corner-hint" id="corner-hint">
+      <span class="hint-label">✨ Ada kejutan!</span>
+      <span class="hint-emoji">❤️</span>
+    </div>
+  </div>
+
+  <!-- Music disc -->
+  <div id="music-disc" class="disc-paused" onclick="toggleMusic()"><span class="disc-inner">💿</span></div>
+  <audio id="bgm" loop preload="auto" src="audio/phase3-hbd.mp3"></audio>
+
+  <!-- Go overlay -->
+  <div class="go-overlay" id="go-overlay"><span>❤️</span></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+    // ── TOKEN GATE ──
+    const TOKEN_1 = 'hbd_t1_xK9mP2';
+    const TOKEN_2 = 'hbd_t2_qR4wL7';
+    if (sessionStorage.getItem('hbd_token_1') !== TOKEN_1) {
+      window.location.href = './';
+    }
+
+    // ── AUDIO ──
+    const bgm = document.getElementById('bgm');
+    const disc = document.getElementById('music-disc');
+    bgm.volume = 0.5;
+    function playBGM(){ bgm.play().then(()=>disc.classList.remove('disc-paused')).catch(()=>{}); }
+    function toggleMusic(){
+      if(bgm.paused){bgm.play();disc.classList.remove('disc-paused');}
+      else{bgm.pause();disc.classList.add('disc-paused');}
+    }
+
+    // ── Gift box logic ──
+    window.onload = function(){
+      var merrywrap = document.getElementById('merrywrap');
+      var box = merrywrap.getElementsByClassName('giftbox')[0];
+      var step = 1;
+
+      box.addEventListener('click', openBox, false);
+
+      function setStep(s){ merrywrap.className = 'merrywrap step-' + s; }
+
+      function openBox(){
+        if (step === 1) box.removeEventListener('click', openBox, false);
+        setStep(step);
+
+        if (step === 2) {
+          // Play music when gift opens
+          playBGM();
+          // flyUp = 0.4s, flyDown = 0.25s → wait 600ms then crossfade
+          setTimeout(switchToUcapan, 600);
+          return;
+        }
+        step++;
+        // step 1 wobble → after 2s auto-advance to step 2 (flyUp/flyDown)
+        setTimeout(openBox, 2000);
+      }
+    };
+
+    // ── Crossfade to ucapan phase ──
+    function switchToUcapan(){
+      var gift = document.getElementById('phase-gift');
+      var ucapan = document.getElementById('phase-ucapan');
+
+      gift.classList.add('fade-out');
+      ucapan.classList.add('active');
+
+      // Start floating hearts
+      startHearts();
+    }
+
+    // ── Floating hearts (exact love-you/dist original) ──
+    var heartInterval;
+    function startHearts(){
+      heartInterval = setInterval(function(){
+        var r_num  = Math.floor(Math.random() * 40) + 1;
+        var r_size = Math.floor(Math.random() * 65) + 10;
+        var r_left = Math.floor(Math.random() * 100) + 1;
+        var r_bg   = Math.floor(Math.random() * 25) + 100;
+        var r_time = Math.floor(Math.random() * 5) + 5;
+
+        $('#bg-heart').append("<div class='heart' style='width:"+r_size+"px;height:"+r_size+"px;left:"+r_left+"%;background:rgba(255,"+(r_bg-25)+","+r_bg+",1);animation:love "+r_time+"s ease'></div>");
+
+        $('#bg-heart').append("<div class='heart' style='width:"+(r_size-10)+"px;height:"+(r_size-10)+"px;left:"+(r_left+r_num)+"%;background:rgba(255,"+(r_bg-25)+","+(r_bg+25)+",1);animation:love "+(r_time+5)+"s ease'></div>");
+
+        $('.heart').each(function(){
+          var top = $(this).css("top").replace(/[^-\d\.]/g, '');
+          var width = $(this).css("width").replace(/[^-\d\.]/g, '');
+          if(top <= -100 || width >= 150){
+            $(this).detach();
+          }
+        });
+      }, 500);
+    }
+
+    // ── Corner hint → mini-game (set token_2 before navigating) ──
+    document.getElementById('corner-hint').addEventListener('click', function(){
+      sessionStorage.setItem('hbd_token_2', TOKEN_2);
+      document.getElementById('go-overlay').classList.add('show');
+      setTimeout(function(){ window.location.href = './mini-game/'; }, 700);
+    });
+  </script>
+</body>
+</html>

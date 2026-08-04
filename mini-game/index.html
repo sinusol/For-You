@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mini Games 🎮</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="game-header">
+  <div class="progress-wrap">
+    <div class="prog-step active" id="step-0">
+      <div class="step-circle">1</div>
+      <span>Quiz</span>
+    </div>
+    <div class="prog-line" id="line-0"></div>
+    <div class="prog-step" id="step-1">
+      <div class="step-circle">2</div>
+      <span>Puzzle</span>
+    </div>
+    <div class="prog-line" id="line-1"></div>
+    <div class="prog-step" id="step-2">
+      <div class="step-circle">3</div>
+      <span>Hati</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════
+     GAME 1 — QUIZ
+══════════════════════════════════ -->
+<section class="game-section active" id="game-quiz">
+  <div class="section-inner">
+    <div class="game-title-wrap">
+      <span class="game-badge">🧠</span>
+      <h2 class="game-title">Seberapa Kenal Kamu?</h2>
+      <p class="game-sub">Jawab 4 pertanyaan tentang aku</p>
+    </div>
+
+    <div class="quiz-progress">
+      <div class="quiz-bar"><div class="quiz-fill" id="quiz-fill"></div></div>
+      <span class="quiz-count" id="quiz-count">1 / 4</span>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <p class="question-text" id="question-text">Loading...</p>
+
+      <!-- PG options -->
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn" data-i="0"></button>
+        <button class="option-btn" data-i="1"></button>
+        <button class="option-btn" data-i="2"></button>
+        <button class="option-btn" data-i="3"></button>
+      </div>
+
+      <!-- Isian input -->
+      <div class="isian-wrap hidden" id="isian-wrap">
+        <input type="text" class="isian-input" id="isian-input" placeholder="Ketik jawabanmu...">
+        <button class="btn-submit" id="btn-isian-submit">Jawab ✓</button>
+      </div>
+
+      <!-- Feedback -->
+      <div class="feedback hidden" id="feedback">
+        <span class="feedback-icon" id="feedback-icon"></span>
+        <span class="feedback-text" id="feedback-text"></span>
+      </div>
+    </div>
+
+    <button class="btn-next hidden" id="btn-quiz-next">Lanjut →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     GAME 2 — SLIDING PUZZLE
+══════════════════════════════════ -->
+<section class="game-section" id="game-puzzle">
+  <div class="section-inner">
+    <div class="game-title-wrap">
+      <span class="game-badge">🧩</span>
+      <h2 class="game-title">Susun Foto Kita!</h2>
+      <p class="game-sub">Tap tile yang mau digeser ke ruang kosong</p>
+    </div>
+
+    <div class="puzzle-wrap">
+      <div class="puzzle-grid" id="puzzle-grid"></div>
+    </div>
+
+    <div class="puzzle-actions">
+      <button class="btn-ghost" id="btn-shuffle">🔀 Acak Ulang</button>
+      <span class="puzzle-moves">Langkah: <strong id="move-count">0</strong></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     GAME 3 — CARI HATI TERSEMBUNYI
+══════════════════════════════════ -->
+<section class="game-section" id="game-hearts">
+  <div class="section-inner">
+    <div class="game-title-wrap">
+      <span class="game-badge">🔍</span>
+      <h2 class="game-title">Cari 4 Hati Tersembunyi!</h2>
+      <p class="game-sub">Tap benda yang menyimpan ❤️ di baliknya</p>
+    </div>
+
+    <div class="hearts-counter">
+      <span class="hc-icon" id="hc-0">🤍</span>
+      <span class="hc-icon" id="hc-1">🤍</span>
+      <span class="hc-icon" id="hc-2">🤍</span>
+      <span class="hc-icon" id="hc-3">🤍</span>
+    </div>
+
+    <div class="items-grid" id="items-grid"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     COMPLETE SCREEN
+══════════════════════════════════ -->
+<div class="complete-screen hidden" id="complete-screen">
+  <canvas id="confetti-canvas"></canvas>
+  <div class="complete-content">
+    <div class="complete-emoji">🎉</div>
+    <h2 class="complete-title">Selamat!</h2>
+    <p class="complete-sub">Kamu mengenalku dengan baik 💕</p>
+    <div class="score-display">
+      <span>Skor Quiz:</span>
+      <strong id="final-score">0/4</strong>
+    </div>
+    <a href="../wish/" class="btn-gift">
+      Lihat Hadiahmu 🎁
+    </a>
+  </div>
+</div>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

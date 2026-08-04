@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown — All About You</title>
+
+  <!-- Exact same CSS as dailyui-014-countdown-timer/dist/style.css — inlined -->
+  <style>
+    @import url("https://fonts.googleapis.com/css?family=Lato:400,700|Montserrat:900");
+
+    html { display: grid; min-height: 100%; }
+    body { display: grid; background: #183059; margin: 0; }
+
+    .container {
+      position: relative;
+      margin: auto;
+      overflow: hidden;
+      width: 650px;
+      height: 480px;
+    }
+
+    h1 {
+      font-family: "Lato", sans-serif;
+      text-align: center;
+      margin-top: 2em;
+      font-size: 1em;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      color: #F6F4F3;
+    }
+
+    #timer {
+      color: #F6F4F3;
+      text-align: center;
+      text-transform: uppercase;
+      font-family: "Lato", sans-serif;
+      font-size: 0.7em;
+      letter-spacing: 5px;
+      margin-top: 25%;
+    }
+
+    .days, .hours, .minutes, .seconds {
+      display: inline-block;
+      padding: 20px;
+      width: 100px;
+      border-radius: 5px;
+      margin: 0 4px;
+    }
+    .days    { background: #EF2F3C; }
+    .hours   { background: #F6F4F3; color: #183059; }
+    .minutes { background: #276FBF; }
+    .seconds { background: #F0A202; }
+
+    .numbers {
+      font-family: "Montserrat", sans-serif;
+      color: #183059;
+      font-size: 4em;
+    }
+
+    .white {
+      position: absolute;
+      background: #F6F4F3;
+      height: 85px;
+      width: 75px;
+      left: 30%;
+      top: 2%;
+    }
+    .white .triangle { border-bottom: 14px solid #F6F4F3; }
+    .white .string { background: #F6F4F3; border: 1px solid #F6F4F3; }
+
+    .red {
+      position: absolute;
+      background: #EF2F3C;
+      left: 18%;
+      top: 9%;
+      height: 65px;
+      width: 70px;
+    }
+    .red .triangle { border-bottom: 14px solid #EF2F3C; }
+    .red .string { background: #EF2F3C; border: 1px solid #EF2F3C; }
+
+    .blue {
+      position: absolute;
+      background: #276FBF;
+      height: 80px;
+      width: 80px;
+      left: 60%;
+      top: 5%;
+    }
+    .blue .triangle { border-bottom: 14px solid #276FBF; }
+    .blue .string { background: #276FBF; border: 1px solid #276FBF; }
+
+    .balloon {
+      border: 1px solid #000;
+      border-radius: 50% 50% 50% 50%/40% 40% 60% 60%;
+      z-index: 2;
+      animation: float 3s ease-in-out infinite;
+    }
+    .red  { animation-delay: 0.5s; }
+    .blue { animation-delay: 1s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-11px); }
+    }
+
+
+    .eye {
+      position: absolute;
+      width: 7px; height: 7px;
+      top: 40%; left: 22%;
+      background: #000;
+      border-radius: 50%;
+    }
+    .eye:after {
+      content: "";
+      left: 35px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #000;
+      position: absolute;
+    }
+
+    .mouth {
+      position: absolute;
+      top: 45%; left: 43%;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    .happy {
+      border: 2px solid;
+      border-color: transparent #000 #000 transparent;
+      transform: rotate(45deg);
+    }
+
+    .triangle {
+      position: absolute;
+      left: 40%; bottom: -10%;
+      width: 0; height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+    }
+
+    .string {
+      position: absolute;
+      height: 70px; width: 1px;
+      left: 48%; top: 100%;
+      z-index: -1;
+    }
+
+    .star {
+      width: 20px; height: 20px;
+      background: #F6F4F3;
+      -webkit-clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    .star-red {
+      width: 30px; height: 30px;
+      margin-left: 51px; margin-top: -5px;
+      background: #EF2F3C;
+      -webkit-clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+
+
+    /* ── Tambahan: tombol buka hadiah ── */
+    #btn-hadiah {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #btn-hadiah a {
+      display: inline-block;
+      padding: 14px 32px;
+      background: #EF2F3C;
+      color: #fff;
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.9em;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    #btn-hadiah a:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(239,47,60,0.5);
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(239,47,60,0.5); }
+      50%      { box-shadow: 0 0 0 14px rgba(239,47,60,0); }
+    }
+
+    @media (max-width: 660px) {
+      .container { width: 100%; height: auto; padding-bottom: 40px; }
+      .days, .hours, .minutes, .seconds { width: 65px; padding: 12px 6px; }
+      .numbers { font-size: 2.5em; }
+      #timer { margin-top: 35%; }
+    }
+
+    /* ── Music disc ── */
+    #music-disc {
+      position: fixed; top: 16px; right: 16px; z-index: 999;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.4);
+      border: 2px solid rgba(255,255,255,.25); user-select: none;
+    }
+    .disc-inner { font-size: 20px; animation: discSpin 3s linear infinite; display:block; }
+    #music-disc.disc-paused .disc-inner { animation-play-state: paused; }
+    @keyframes discSpin { to { transform: rotate(360deg); } }
+
+    /* ── Intro overlay ── */
+    #intro-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #4BB8FA;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 18px;
+      transition: opacity .6s ease;
+    }
+    #intro-overlay.fade-out { opacity: 0; pointer-events: none; }
+    #intro-overlay h2 {
+      font-family: "Lato", sans-serif;
+      color: #fff; font-size: clamp(1.2rem, 4vw, 1.6rem);
+      text-align: center; letter-spacing: 1px;
+      margin: 0; padding: 0 20px;
+    }
+    #intro-overlay p {
+      font-family: "Lato", sans-serif;
+      color: rgba(255,255,255,.8); font-size: clamp(.75rem, 2vw, .9rem);
+      text-align: center; margin: 0;
+    }
+    #pw-form {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      width: min(300px, 85vw);
+    }
+    #pw-input {
+      width: 100%; padding: 12px 16px;
+      border: 2px solid rgba(255,255,255,.5);
+      border-radius: 30px; background: rgba(255,255,255,.15);
+      color: #fff; font-family: "Lato", sans-serif; font-size: 1rem;
+      text-align: center; outline: none; letter-spacing: 2px;
+    }
+    #pw-input::placeholder { color: rgba(255,255,255,.6); letter-spacing: 1px; }
+    #pw-input:focus { border-color: #fff; background: rgba(255,255,255,.25); }
+    #pw-btn {
+      padding: 11px 32px; border: none; border-radius: 30px;
+      background: #fff; color: #4BB8FA;
+      font-family: "Montserrat", sans-serif; font-weight: 700;
+      font-size: .9rem; letter-spacing: 1px; cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    #pw-btn:hover { transform: scale(1.04); box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+    #pw-err {
+      color: #ffe0e0; font-family: "Lato", sans-serif;
+      font-size: .85rem; min-height: 1.2em; text-align: center;
+      animation: shake .3s ease;
+    }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro overlay - password gate -->
+  <div id="intro-overlay">
+    <h2>Dari aku yang menyayangimu 💕</h2>
+    <p>Masukkan password untuk lihat sesuatu</p>
+    <div id="pw-form">
+      <input type="password" id="pw-input" placeholder="password..." autocomplete="off">
+      <button id="pw-btn">Masuk 💕</button>
+      <div id="pw-err"></div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Exact same balloon HTML as dailyui-014 -->
+    <div class="balloon white">
+      <div class="star-red"></div>
+      <div class="face">
+        <div class="eye"></div>
+        <div class="mouth happy"></div>
+      </div>
+      <div class="triangle"></div>
+      <div class="string"></div>
+    </div>
+
+    <div class="balloon red">
+      <div class="star"></div>
+      <div class="face">
+        <div class="eye"></div>
+        <div class="mouth happy"></div>
+      </div>
+      <div class="triangle"></div>
+      <div class="string"></div>
+    </div>
+
+    <div class="balloon blue">
+      <div class="star"></div>
+      <div class="face">
+        <div class="eye"></div>
+        <div class="mouth happy"></div>
+      </div>
+      <div class="triangle"></div>
+      <div class="string"></div>
+    </div>
+
+    <div id="timer"></div>
+    <h1>Menuju Hari Spesialmu ❤️</h1>
+
+    <!-- Tombol muncul setelah waktu habis -->
+    <div id="btn-hadiah">
+      <a href="surprise.html" id="link-hadiah" onclick="return goSurprise()">Buka Hadiah 🎁</a>
+    </div>
+
+  </div>
+
+  <!-- Music disc -->
+  <div id="music-disc" onclick="toggleMusic()"><span class="disc-inner">💿</span></div>
+  <audio id="bgm" loop preload="auto" src="audio/phase1-instrumental.mp3"></audio>
+
+  <script>
+    // ── PASSWORD GATE + TOKEN SYSTEM ──
+    // Token chain: index → token_1 → surprise → token_2 → mini-game → token_3 → wish
+    const PASSWORD_HASH = '48ee27aad80a724ace1fe0b1023ae3118e28167568490ffcae57bfbc984ad78f';
+    const TOKEN_1  = 'hbd_t1_xK9mP2';
+
+    async function sha256(text) {
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    const bgm   = document.getElementById('bgm');
+    const disc  = document.getElementById('music-disc');
+    const intro = document.getElementById('intro-overlay');
+    const input = document.getElementById('pw-input');
+    const btn   = document.getElementById('pw-btn');
+    const err   = document.getElementById('pw-err');
+    bgm.volume = 0.5;
+    disc.classList.add('disc-paused');
+
+    async function trySubmit() {
+      const val = input.value.trim();
+      const hash = await sha256(val);
+      if (hash === PASSWORD_HASH) {
+        // Correct — save token_1, dismiss overlay, play music
+        sessionStorage.setItem('hbd_token_1', TOKEN_1);
+        bgm.play().then(()=>disc.classList.remove('disc-paused')).catch(()=>{});
+        intro.classList.add('fade-out');
+        setTimeout(()=>intro.remove(), 650);
+        err.textContent = '';
+      } else {
+        // Wrong — shake + error
+        err.textContent = 'Password salah, coba lagi 🥺';
+        input.value = '';
+        // Re-trigger shake animation
+        err.style.animation = 'none';
+        setTimeout(()=>{ err.style.animation = 'shake .3s ease'; }, 10);
+        input.focus();
+      }
+    }
+
+    btn.addEventListener('click', trySubmit);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') trySubmit(); });
+    // Auto-focus
+    setTimeout(() => input.focus(), 300);
+
+    function toggleMusic(){
+      if(bgm.paused){bgm.play();disc.classList.remove('disc-paused');}
+      else{bgm.pause();disc.classList.add('disc-paused');}
+    }
+
+    function goSurprise() {
+      // Must have token_1 (set after password)
+      if (sessionStorage.getItem('hbd_token_1') !== TOKEN_1) {
+        alert('Masukkan password dulu ya 🥺');
+        return false;
+      }
+      return true; // proceed to surprise.html
+    }
+
+    // ── CONFIG: ganti tanggal target di sini ──
+    const TARGET_DATE = new Date(2026, 7, 4, 8, 0, 0).getTime(); // 1 Agustus 2026
+
+    const timerEl = document.getElementById('timer');
+    const btnEl   = document.getElementById('btn-hadiah');
+
+    let timer = setInterval(function () {
+      const today = new Date().getTime();
+      const diff  = TARGET_DATE - today;
+
+      let days, hours, minutes, seconds;
+
+      if (diff <= 0) {
+        // Waktu sudah lewat — tampilkan 00 semua, munculkan tombol
+        days = 0; hours = 0; minutes = 0; seconds = 0;
+        btnEl.style.display = 'block';
+      } else {
+        days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+        hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      }
+
+      timerEl.innerHTML =
+        '<div class="days"><div class="numbers">'    + days    + '</div>hari</div>'  +
+        '<div class="hours"><div class="numbers">'   + hours   + '</div>jam</div>'   +
+        '<div class="minutes"><div class="numbers">' + minutes + '</div>menit</div>' +
+        '<div class="seconds"><div class="numbers">' + seconds + '</div>detik</div>';
+
+    }, 1000);
+  </script>
+</body>
+</html>
